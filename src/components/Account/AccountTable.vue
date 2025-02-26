@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import DeleteButton from '@/components/Widgets/DeleteButton.vue'
 import PasswordInput from '@/components/Widgets/PasswordInput.vue'
 import { useAccountStore } from '@/stores/account'
@@ -7,18 +7,14 @@ import { validateField } from '@/utils/validation'
 import { formatLabel, labelToString } from '@/utils/format-label'
 
 const account_store = useAccountStore()
-const loginInputs = ref({}) // Track login input references
 
 // Function to save updates with validation
 const saveUpdate = (account, field, value) => {
-  if (!validateField(field, value)) return
-
   if (field === 'login') {
-    const isDuplicate = account_store.LIST.some(
-      (acc) => acc.id !== account.id && acc.login === value,
-    )
+    const isDuplicate = account_store.CHECK_LOGIN(account.id, value)
     if (isDuplicate) {
       alert('Этот логин уже используется!')
+
       setTimeout(() => {
         loginInputs.value[account.id]?.focus()
       }, 100)
@@ -29,8 +25,6 @@ const saveUpdate = (account, field, value) => {
   let updatedValue = field === 'label' ? formatLabel(value) : value
   account_store.SET_ONE({ ...account, [field]: updatedValue })
 }
-
-// Check if password column should be shown
 const showPasswordColumn = computed(() =>
   account_store.LIST.some((account) => account.type !== 'LDAP'),
 )
@@ -90,7 +84,14 @@ const showPasswordColumn = computed(() =>
               ref="(el) => (loginInputs.value[account.id] = el)"
               v-model="account.login"
               @blur="saveUpdate(account, 'login', account.login)"
-              class="w-full p-2 px-3 border border-gray-400 rounded outline-none focus:ring-1 focus:ring-green-300 focus:border-green-300"
+              class="w-full p-2 px-3 border-2 rounded outline-none focus:ring-1 focus:ring-green-300 focus:border-green-300"
+              :class="{
+                'border-red-500 focus:ring-red-300 focus:border-red-300': account_store.CHECK_LOGIN(
+                  account.id,
+                  account.login,
+                ),
+                'border-gray-400': !account_store.CHECK_LOGIN(account.id, account.login),
+              }"
               :maxlength="100"
             />
           </td>

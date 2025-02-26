@@ -58,6 +58,12 @@ export const useAccountStore = defineStore('account', () => {
     state.list = state.list.filter((account) => account.id !== id)
   }
 
+  // Check login is duplicate or not
+  const CHECK_LOGIN = (id: number, login: string): boolean => {
+    const isDuplicate = state.list.some((account) => account.id !== id && account.login === login)
+    return isDuplicate
+  }
+
   // Save to localStorage whenever state.list changes
   watch(
     () => state.list,
@@ -72,5 +78,6 @@ export const useAccountStore = defineStore('account', () => {
     SET_ONE,
     ADD_ACCOUNT,
     DELETE,
+    CHECK_LOGIN, // Expose CHECK_LOGIN function
   }
 })
