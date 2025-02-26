@@ -12,7 +12,7 @@ const emit = defineEmits(['delete'])
   <button
     @click="emit('delete')"
     type="button"
-    class="text-red-600 hover:bg-red-100 rounded-lg p-2 transition duration-200"
+    class="text-red-600 bg-red-100 hover:bg-red-200 rounded-lg p-2 transition duration-200"
   >
     <Trash2 class="w-5 h-5 text-red-500" />
   </button>

@@ -31,7 +31,6 @@ vue-account-form/
 │   ├── views/               # Main views/pages
 │   ├── App.vue              # Root Vue component
 │   └── main.ts              # Application entry point
-├── tests/                   # Unit tests
 ├── public/                  # Public assets (e.g., favicon)
 ├── index.html               # Main HTML file
 ├── vite.config.ts           # Vite configuration
@@ -127,37 +126,9 @@ You can customize the project by modifying the following files:
 
 ---
 
-## Contributing
-
-Contributions are welcome! If you’d like to contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix.
-3. Commit your changes with clear and descriptive messages.
-4. Push your branch and submit a pull request.
-
----
-
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
-
----
-
-## Acknowledgments
-
-- **Vue.js Team**: For creating an amazing framework.
-- **Pinia Team**: For simplifying state management in Vue.
-- **Vite Team**: For providing a fast and modern build tool.
-
----
-
-## Contact
-
-If you have any questions or feedback, feel free to reach out:
-
-- **Email**: your-email@example.com
-- **GitHub**: [your-username](https://github.com/your-username)
 
 ---
 
