@@ -14,10 +14,27 @@ interface Account {
 interface State {
   list: Account[]
 }
-
 export const useAccountStore = defineStore('account', () => {
   const state = reactive<State>({
-    list: [],
+    list: [
+      { id: 1, label: 'Admin;Manager', type: 'LDAP', login: 'admin_user', password: null },
+      {
+        id: 2,
+        label: 'Developer',
+        type: 'Локальная',
+        login: 'dev_user',
+        password: 'SecurePass123',
+      },
+      { id: 3, label: 'HR;Recruitment', type: 'LDAP', login: 'hr_manager', password: null },
+      {
+        id: 4,
+        label: 'Support',
+        type: 'Локальная',
+        login: 'support_agent',
+        password: 'HelpDesk456',
+      },
+      { id: 5, label: 'Finance', type: 'LDAP', login: 'finance_team', password: null },
+    ],
   })
 
   // Add account

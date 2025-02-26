@@ -1,11 +1,11 @@
 <script setup>
-import Table from './components/Table.vue'
+import AccountTable from './components/AccountTable.vue'
 </script>
 
 <template>
-  <div class="container mx-auto py-10">
-    <Table />
+  <div class="h-dvh bg-slate-300 py-10">
+    <div class="container mx-auto">
+      <AccountTable />
+    </div>
   </div>
 </template>
-
-<style scoped></style>
