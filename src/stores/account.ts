@@ -1,6 +1,6 @@
 import { computed, reactive, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { formatLabel, labelToString } from '@/utils/format-label'
+import { formatLabel, labelToString } from '../utils/format-label'
 
 // Define types for account
 interface Account {
@@ -20,7 +20,17 @@ export const useAccountStore = defineStore('account', () => {
   // Load from localStorage or use default
   const storedData = localStorage.getItem('accounts')
   const state = reactive<State>({
-    list: storedData ? JSON.parse(storedData) : [],
+    list: storedData
+      ? JSON.parse(storedData)
+      : [
+          {
+            id: 1,
+            label: [{ text: 'XXX' }, { text: 'YYY' }],
+            type: 'LDAP',
+            login: 'admin',
+            password: 'admin',
+          },
+        ],
   })
 
   // Helper function to enforce character limits and format label
@@ -60,7 +70,9 @@ export const useAccountStore = defineStore('account', () => {
 
   // Check login is duplicate or not
   const CHECK_LOGIN = (id: number, login: string): boolean => {
-    const isDuplicate = state.list.some((account) => account.id !== id && account.login === login)
+    const isDuplicate = state.list.some(
+      (account) => account.login && account.id !== id && account.login === login,
+    )
     return isDuplicate
   }
 
@@ -78,6 +90,6 @@ export const useAccountStore = defineStore('account', () => {
     SET_ONE,
     ADD_ACCOUNT,
     DELETE,
-    CHECK_LOGIN, // Expose CHECK_LOGIN function
+    CHECK_LOGIN,
   }
 })

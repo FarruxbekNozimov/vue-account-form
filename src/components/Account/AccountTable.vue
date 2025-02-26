@@ -1,33 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue'
-import DeleteButton from '@/components/Widgets/DeleteButton.vue'
-import PasswordInput from '@/components/Widgets/PasswordInput.vue'
-import { useAccountStore } from '@/stores/account'
-import { validateField } from '@/utils/validation'
-import { formatLabel, labelToString } from '@/utils/format-label'
+import { useAccount } from '@/components/Account/composables/useAccount.ts'
+import AccountRow from '@/components/Account/AccountRow.vue'
 
-const account_store = useAccountStore()
+const { account_store, showPasswordColumn, saveUpdate } = useAccount()
 
-// Function to save updates with validation
-const saveUpdate = (account, field, value) => {
-  if (field === 'login') {
-    const isDuplicate = account_store.CHECK_LOGIN(account.id, value)
-    if (isDuplicate) {
-      alert('Этот логин уже используется!')
-
-      setTimeout(() => {
-        loginInputs.value[account.id]?.focus()
-      }, 100)
-      return
-    }
-  }
-
-  let updatedValue = field === 'label' ? formatLabel(value) : value
-  account_store.SET_ONE({ ...account, [field]: updatedValue })
+const isDuplicateLogin = (account) => {
+  return account_store.CHECK_LOGIN(account.id, account.login)
 }
-const showPasswordColumn = computed(() =>
-  account_store.LIST.some((account) => account.type !== 'LDAP'),
-)
 </script>
 
 <template>
@@ -39,77 +18,29 @@ const showPasswordColumn = computed(() =>
           <th class="px-6 py-3 w-[20%]">Типа записи</th>
           <th class="px-6 py-3 w-[20%]">Логин</th>
           <th class="px-6 py-3 w-[20%]">
-            {{ showPasswordColumn || !account_store.LIST.length ? 'Пароль' : '' }}
+            {{ showPasswordColumn || !account_store?.LIST?.length ? 'Пароль' : '' }}
           </th>
           <th class="px-6 py-3 w-[10%]"></th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="account in account_store.LIST"
+        <AccountRow
+          v-for="account in account_store?.LIST"
           :key="account.id"
-          class="bg-white border-b border-gray-300 text-gray-700"
-        >
-          <!-- Label Input -->
-          <td class="px-6 py-4">
-            <input
-              :value="labelToString(account.label)"
-              @blur="(e) => saveUpdate(account, 'label', e.target.value)"
-              class="w-full p-2 px-3 border-2 border-gray-400 rounded outline-none focus:ring-1 focus:ring-green-300 focus:border-green-300"
-              :maxlength="50"
-            />
-          </td>
-
-          <!-- Account Type -->
-          <td class="px-6 py-4">
-            <select
-              v-model="account.type"
-              @change="
-                account_store.SET_ONE({
-                  ...account,
-                  type: account.type,
-                  password: account.type === 'LDAP' ? null : account.password,
-                })
-              "
-              class="p-2 px-3 border border-gray-400 rounded outline-none bg-white"
-            >
-              <option value="LDAP">LDAP</option>
-              <option value="Локальная">Локальная</option>
-            </select>
-          </td>
-
-          <!-- Account Login Input -->
-          <td class="px-6 py-4" :colspan="account.type !== 'Локальная' ? 2 : 1">
-            <input
-              ref="(el) => (loginInputs.value[account.id] = el)"
-              v-model="account.login"
-              @blur="saveUpdate(account, 'login', account.login)"
-              class="w-full p-2 px-3 border-2 rounded outline-none focus:ring-1 focus:ring-green-300 focus:border-green-300"
-              :class="{
-                'border-red-500 focus:ring-red-300 focus:border-red-300': account_store.CHECK_LOGIN(
-                  account.id,
-                  account.login,
-                ),
-                'border-gray-400': !account_store.CHECK_LOGIN(account.id, account.login),
-              }"
-              :maxlength="100"
-            />
-          </td>
-
-          <!-- Account Password Input (Only for Локальная) -->
-          <td v-if="account.type === 'Локальная'" class="px-6 py-4">
-            <PasswordInput
-              v-model="account.password"
-              @blur="saveUpdate(account, 'password', account.password)"
-              :maxlength="100"
-            />
-          </td>
-
-          <!-- Delete Button -->
-          <td class="px-6 py-4 text-center">
-            <DeleteButton @click="account_store.DELETE(account.id)" />
-          </td>
-        </tr>
+          :account="account"
+          :isDuplicateLogin="isDuplicateLogin"
+          @update-label="(account, value) => (account.label = value)"
+          @save-update="saveUpdate"
+          @update-type="
+            (account) =>
+              account_store.SET_ONE({
+                ...account,
+                password: account.type === 'LDAP' ? null : account.password,
+              })
+          "
+          @update-login="(account, value) => (account.login = value)"
+          @delete-account="(id) => account_store.DELETE(id)"
+        />
       </tbody>
     </table>
   </div>

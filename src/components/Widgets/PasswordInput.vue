@@ -1,6 +1,6 @@
 <script setup>
-import { Eye, EyeClosed } from 'lucide-vue-next'
 import { ref } from 'vue'
+import { Eye, EyeClosed } from 'lucide-vue-next'
 
 // Props for v-model and disabled state
 defineProps({ modelValue: String, disabled: Boolean })
