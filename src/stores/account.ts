@@ -20,17 +20,7 @@ export const useAccountStore = defineStore('account', () => {
   // Load from localStorage or use default
   const storedData = localStorage.getItem('accounts')
   const state = reactive<State>({
-    list: storedData
-      ? JSON.parse(storedData)
-      : [
-          {
-            id: 1,
-            label: [{ text: 'Admin' }, { text: 'HR' }],
-            type: 'Локальная',
-            login: 'admin',
-            password: 'password',
-          },
-        ],
+    list: storedData ? JSON.parse(storedData) : [],
   })
 
   // Helper function to enforce character limits and format label

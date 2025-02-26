@@ -22,7 +22,7 @@ const togglePassword = () => {
       @input="emit('update:modelValue', $event.target.value)"
       :type="showPassword ? 'text' : 'password'"
       :disabled="disabled"
-      class="w-full p-1 px-3 border border-gray-400 rounded outline-none pr-8"
+      class="w-full p-2 px-3 border border-gray-400 rounded outline-none pr-8"
       :class="{ 'bg-gray-100 cursor-not-allowed': disabled }"
       placeholder="Enter password"
     />

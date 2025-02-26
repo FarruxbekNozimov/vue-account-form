@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeUnmount, onMounted } from 'vue'
+import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
 import DeleteButton from '@/components/Widgets/DeleteButton.vue'
 import PasswordInput from '@/components/Widgets/PasswordInput.vue'
 import { useAccountStore } from '@/stores/account'
@@ -10,7 +10,7 @@ const account_store = useAccountStore()
 
 // Local validation states
 const inputStates = ref({})
-const hasUnsavedChanges = ref(false) // Track unsaved changes
+const hasUnsavedChanges = ref(false)
 
 // Function to update state
 const setInputState = (id, field, value) => {
@@ -19,21 +19,21 @@ const setInputState = (id, field, value) => {
     focused: true,
     valid: validateField(field, value),
   }
-  hasUnsavedChanges.value = true // Mark as unsaved
+  hasUnsavedChanges.value = true
 }
 
 // Function to save updates
 const saveUpdate = (account, field, value) => {
-  if (!validateField(field, value)) return // Prevent invalid updates
+  if (!validateField(field, value)) return
 
   let updatedValue = value
   if (field === 'label') {
-    updatedValue = formatLabel(value) // Convert string to array of objects
+    updatedValue = formatLabel(value)
   }
 
   account_store.SET_ONE({ ...account, [field]: updatedValue })
-  inputStates.value[account.id][field].focused = false // Remove focus after saving
-  hasUnsavedChanges.value = false // Reset unsaved state after saving
+  inputStates.value[account.id][field].focused = false
+  hasUnsavedChanges.value = false
 }
 
 // Warn before leaving the page
@@ -43,6 +43,11 @@ const beforeUnloadHandler = (event) => {
     event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
   }
 }
+
+// Check if all accounts have no password
+const showPasswordColumn = computed(() =>
+  account_store.LIST.some((account) => account.type !== 'LDAP'),
+)
 
 onMounted(() => {
   window.addEventListener('beforeunload', beforeUnloadHandler)
@@ -61,7 +66,7 @@ onBeforeUnmount(() => {
           <th scope="col" class="px-6 py-3">Метки</th>
           <th scope="col" class="px-6 py-3">Типа записи</th>
           <th scope="col" class="px-6 py-3">Логин</th>
-          <th scope="col" class="px-6 py-3">Пароль</th>
+          <th scope="col" class="px-6 py-3">{{ showPasswordColumn ? 'Пароль' : '' }}</th>
           <th scope="col" class="px-6 py-3"></th>
         </tr>
       </thead>
