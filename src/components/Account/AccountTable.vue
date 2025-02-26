@@ -37,7 +37,7 @@ const saveUpdate = (account, field, value) => {
 <template>
   <div class="border rounded-xl shadow-xl relative overflow-x-auto">
     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-      <thead class="text-xs text-gray-700 uppercase bg-slate-200">
+      <thead class="text-xs text-gray-500 uppercase bg-gray-100">
         <tr>
           <th scope="col" class="px-6 py-3">Метки</th>
           <th scope="col" class="px-6 py-3">Типа записи</th>

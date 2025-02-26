@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { formatLabel, labelToString } from '@/utils/format-label'
 
@@ -17,16 +17,20 @@ interface State {
 }
 
 export const useAccountStore = defineStore('account', () => {
+  // Load from localStorage or use default
+  const storedData = localStorage.getItem('accounts')
   const state = reactive<State>({
-    list: [
-      {
-        id: 1,
-        label: [{ text: 'Admin' }, { text: 'HR' }, { text: 'HR' }],
-        type: 'Локальная',
-        login: 'admin',
-        password: 'password',
-      },
-    ],
+    list: storedData
+      ? JSON.parse(storedData)
+      : [
+          {
+            id: 1,
+            label: [{ text: 'Admin' }, { text: 'HR' }],
+            type: 'Локальная',
+            login: 'admin',
+            password: 'password',
+          },
+        ],
   })
 
   // Helper function to enforce character limits and format label
@@ -44,12 +48,13 @@ export const useAccountStore = defineStore('account', () => {
     const newAccount: Account = {
       id: Date.now(),
       label: [],
-      type: 'Локальная', // Default type, change if needed
+      type: 'Локальная',
       login: '',
       password: null,
     }
-    state.list = [...state.list, newAccount]
+    state.list.push(newAccount)
   }
+
   // Update one account with validation
   const SET_ONE = (updatedAccount: Account): void => {
     const index = state.list.findIndex((account) => account.id === updatedAccount.id)
@@ -62,6 +67,15 @@ export const useAccountStore = defineStore('account', () => {
   const DELETE = (id: number): void => {
     state.list = state.list.filter((account) => account.id !== id)
   }
+
+  // Save to localStorage whenever state.list changes
+  watch(
+    () => state.list,
+    (newList) => {
+      localStorage.setItem('accounts', JSON.stringify(newList))
+    },
+    { deep: true },
+  )
 
   return {
     LIST: computed(() => state.list),
