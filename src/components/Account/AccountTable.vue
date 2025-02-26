@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useAccountStore } from '@/stores/account'
-import DeleteButton from './Widgets/DeleteButton.vue'
-import PasswordInput from './Widgets/PasswordInput.vue'
+import DeleteButton from '@/components/Widgets/DeleteButton.vue'
+import PasswordInput from '@/components/Widgets/PasswordInput.vue'
 import { validateField } from '@/utils/validation'
 import { formatLabel, labelToString } from '@/utils/format-label'
 

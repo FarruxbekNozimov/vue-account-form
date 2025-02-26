@@ -21,8 +21,8 @@ export const useAccountStore = defineStore('account', () => {
     list: [
       {
         id: 1,
-        label: [{ text: 'Admin' }, { text: 'HR' }],
-        type: 'LDAP',
+        label: [{ text: 'Admin' }, { text: 'HR' }, { text: 'HR' }],
+        type: 'Локальная',
         login: 'admin',
         password: 'password',
       },

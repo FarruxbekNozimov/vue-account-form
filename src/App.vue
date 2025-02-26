@@ -1,11 +1,9 @@
 <script setup>
-import AccountTable from './components/AccountTable.vue'
+import AppAccount from '@/components/Account/AppAccount.vue'
 </script>
 
 <template>
-  <div class="h-dvh bg-slate-300 py-10">
-    <div class="container mx-auto">
-      <AccountTable />
-    </div>
+  <div class="h-dvh bg-slate-300 py-10 font-sans">
+    <AppAccount />
   </div>
 </template>
