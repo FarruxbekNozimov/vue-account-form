@@ -1,14 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useAccountStore } from '@/stores/account-form'
+
 import DeleteButton from './Widgets/DeleteButton.vue'
+import PasswordInput from './Widgets/PasswordInput.vue'
+
 const account_store = useAccountStore()
 
 const showPasswords = ref({}) // Store visibility for each account
-
-const togglePassword = (id) => {
-  showPasswords.value[id] = !showPasswords.value[id]
-}
 </script>
 
 <template>
@@ -52,7 +51,7 @@ const togglePassword = (id) => {
           </td>
 
           <!-- Login Input (Expands if password is hidden) -->
-          <td class="px-6 py-4" :colspan="account.type !== 'LDAP' ? 2 : 1">
+          <td class="px-6 py-4" :colspan="account.type !== 'Локальная' ? 2 : 1">
             <input
               v-model="account.login"
               type="text"
@@ -62,12 +61,8 @@ const togglePassword = (id) => {
           </td>
 
           <!-- Password (Only shown for LDAP, but disabled) -->
-          <td v-if="account.type === 'LDAP'" class="px-6 py-4">
-            <input
-              v-model="account.password"
-              type="password"
-              class="w-full p-1 px-3 border border-gray-400 rounded bg-gray-100 cursor-not-allowed outline-none"
-            />
+          <td v-if="account.type === 'Локальная'" class="px-6 py-4">
+            <PasswordInput v-model="account.password" />
           </td>
 
           <!-- Delete Button (Using DeleteButton.vue) -->
