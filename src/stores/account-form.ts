@@ -17,7 +17,7 @@ interface State {
 export const useAccountStore = defineStore('account', () => {
   const state = reactive<State>({
     list: [
-      { id: 1, label: 'Admin;Manager', type: 'LDAP', login: 'admin_user', password: null },
+      { id: 1, label: 'Admin', type: 'LDAP', login: 'admin_user', password: null },
       {
         id: 2,
         label: 'Developer',
@@ -25,7 +25,7 @@ export const useAccountStore = defineStore('account', () => {
         login: 'dev_user',
         password: 'SecurePass123',
       },
-      { id: 3, label: 'HR;Recruitment', type: 'LDAP', login: 'hr_manager', password: null },
+      { id: 3, label: 'HR', type: 'LDAP', login: 'hr_manager', password: null },
       {
         id: 4,
         label: 'Support',
