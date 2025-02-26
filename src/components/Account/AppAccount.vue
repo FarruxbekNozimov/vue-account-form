@@ -4,7 +4,7 @@ import AccountTopbar from '@/components/Account/AccountTopbar.vue'
 </script>
 
 <template>
-  <div class="container mx-auto space-y-5">
+  <div class="md:container mx-auto space-y-3">
     <AccountTopbar />
     <AccountTable />
   </div>

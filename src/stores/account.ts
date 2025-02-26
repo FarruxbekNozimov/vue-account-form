@@ -40,11 +40,16 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   // Add account with validation
-  const ADD_ACCOUNT = (data: Account): void => {
-    const newAccount: Account = enforceLimits({ ...data, id: Date.now() })
+  const ADD_ACCOUNT = (): void => {
+    const newAccount: Account = {
+      id: Date.now(),
+      label: [],
+      type: 'Локальная', // Default type, change if needed
+      login: '',
+      password: null,
+    }
     state.list = [...state.list, newAccount]
   }
-
   // Update one account with validation
   const SET_ONE = (updatedAccount: Account): void => {
     const index = state.list.findIndex((account) => account.id === updatedAccount.id)
