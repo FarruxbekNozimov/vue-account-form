@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from 'vue'
-import { useAccountStore } from '@/stores/account'
+import { ref, onBeforeUnmount, onMounted } from 'vue'
 import DeleteButton from '@/components/Widgets/DeleteButton.vue'
 import PasswordInput from '@/components/Widgets/PasswordInput.vue'
+import { useAccountStore } from '@/stores/account'
 import { validateField } from '@/utils/validation'
 import { formatLabel, labelToString } from '@/utils/format-label'
 
@@ -10,6 +10,7 @@ const account_store = useAccountStore()
 
 // Local validation states
 const inputStates = ref({})
+const hasUnsavedChanges = ref(false) // Track unsaved changes
 
 // Function to update state
 const setInputState = (id, field, value) => {
@@ -18,6 +19,7 @@ const setInputState = (id, field, value) => {
     focused: true,
     valid: validateField(field, value),
   }
+  hasUnsavedChanges.value = true // Mark as unsaved
 }
 
 // Function to save updates
@@ -31,7 +33,24 @@ const saveUpdate = (account, field, value) => {
 
   account_store.SET_ONE({ ...account, [field]: updatedValue })
   inputStates.value[account.id][field].focused = false // Remove focus after saving
+  hasUnsavedChanges.value = false // Reset unsaved state after saving
 }
+
+// Warn before leaving the page
+const beforeUnloadHandler = (event) => {
+  if (hasUnsavedChanges.value) {
+    event.preventDefault()
+    event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('beforeunload', beforeUnloadHandler)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', beforeUnloadHandler)
+})
 </script>
 
 <template>
@@ -58,7 +77,7 @@ const saveUpdate = (account, field, value) => {
               :value="labelToString(account.label)"
               @input="(e) => setInputState(account.id, 'label', e.target.value)"
               @blur="(e) => saveUpdate(account, 'label', e.target.value)"
-              class="w-full p-1 px-3 border border-gray-400 rounded outline-none pr-8"
+              class="w-full p-2 px-3 border border-gray-400 rounded outline-none pr-8"
               :maxlength="50"
             />
           </td>
@@ -74,7 +93,7 @@ const saveUpdate = (account, field, value) => {
                   password: account.type === 'LDAP' ? null : account.password,
                 })
               "
-              class="p-1 px-3 border border-gray-400 rounded outline-none"
+              class="p-2 px-3 border border-gray-400 rounded outline-none"
             >
               <option value="LDAP">LDAP</option>
               <option value="Локальная">Локальная</option>
@@ -87,7 +106,7 @@ const saveUpdate = (account, field, value) => {
               v-model="account.login"
               @focus="setInputState(account.id, 'login', account.login)"
               @blur="saveUpdate(account, 'login', account.login)"
-              class="w-full p-1 px-3 border border-gray-400 rounded outline-none pr-8"
+              class="w-full p-2 px-3 border border-gray-400 rounded outline-none pr-8"
               :maxlength="100"
             />
           </td>
